@@ -80,7 +80,7 @@ async def start_snakemq():
 
         elif message["type"] in ["message", "message_raw", "image/png", "image/jpeg"]:
             # TODO: 1:1 kernel <> channel mapping
-            logger.debug("%s of type %s" % (message["value"], message["type"]))
+            logger.debug(f'{message["value"]} of type {message["type"]}')
 
             result_queue.put({
                 "value": message["value"],

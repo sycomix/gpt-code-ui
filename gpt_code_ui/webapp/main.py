@@ -87,16 +87,12 @@ async def get_code(user_prompt, user_openai_key=None, model="gpt-3.5-turbo"):
         triple_match = re.search(r'```(?:\w+\n)?(.+?)```', text, re.DOTALL)
         if triple_match:
             return triple_match.group(1).strip()
-        else:
-            # If no triple backtick blocks, match single backtick blocks
-            single_match = re.search(r'`(.+?)`', text, re.DOTALL)
-            if single_match:
-                return single_match.group(1).strip()
-        # If no code blocks found, return original text
-        return text
+        # If no triple backtick blocks, match single backtick blocks
+        single_match = re.search(r'`(.+?)`', text, re.DOTALL)
+        return single_match.group(1).strip() if single_match else text
 
     if response.status_code != 200:
-        return "Error: " + response.text, 500
+        return f"Error: {response.text}", 500
 
     return extract_code(response.json()["choices"][0]["message"]["content"]), 200
 
@@ -136,8 +132,7 @@ def proxy_kernel_manager(path):
     headers = [(name, value) for (name, value) in resp.raw.headers.items()
                if name.lower() not in excluded_headers]
 
-    response = Response(resp.content, resp.status_code, headers)
-    return response
+    return Response(resp.content, resp.status_code, headers)
 
 
 @app.route('/assets/<path:path>')

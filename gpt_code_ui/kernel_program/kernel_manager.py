@@ -46,14 +46,14 @@ def cleanup_spawned_processes():
         if os.path.isfile(fp):
             try:
                 pid = int(filename.split(".pid")[0])
-                logger.debug("Killing process with pid %s" % pid)
+                logger.debug(f"Killing process with pid {pid}")
                 os.remove(fp)
                 try:
                     if os.name == "nt":
                         os.kill(pid, signal.CTRL_BREAK_EVENT)
                     else:
                         os.kill(pid, signal.SIGKILL)
-                    
+
                     # After successful kill, cleanup pid file
                     os.remove(fp)
 
@@ -74,7 +74,7 @@ def start_snakemq(kc):
             message = json.loads(message.data.decode("utf-8"))
 
             if message["type"] == "execute":
-                logger.debug("Executing command: %s" % message["value"])
+                logger.debug(f'Executing command: {message["value"]}')
                 kc.execute(message["value"])
                 # Try direct flush with default wait (0.2)
                 flush_kernel_msgs(kc)
@@ -95,7 +95,7 @@ def start_snakemq(kc):
         logger.info("Keyboard interrupt received, exiting...")
         sys.exit(0)
     except Exception as e:
-        logger.error("Error in snakemq loop: %s" % e)
+        logger.error(f"Error in snakemq loop: {e}")
         sys.exit(1)
 
 
@@ -141,7 +141,7 @@ def flush_kernel_msgs(kc, tries=1, timeout=0.2):
                         send_message(msg["content"]["data"]["text/plain"])
 
                 elif msg["msg_type"] == "stream":
-                    logger.debug("Received stream output %s" % msg["content"]["text"])
+                    logger.debug(f'Received stream output {msg["content"]["text"]}')
                     send_message(msg["content"]["text"])
                 elif msg["msg_type"] == "error":
                     send_message(
@@ -192,7 +192,7 @@ def start_kernel():
     # Write PID for caller to kill
     str_kernel_pid = str(kernel_process.pid)
     os.makedirs(config.KERNEL_PID_DIR, exist_ok=True)
-    with open(os.path.join(config.KERNEL_PID_DIR, str_kernel_pid + ".pid"), "w") as p:
+    with open(os.path.join(config.KERNEL_PID_DIR, f"{str_kernel_pid}.pid"), "w") as p:
         p.write("kernel")
 
     # Wait for kernel connection file to be written

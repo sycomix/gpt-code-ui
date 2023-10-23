@@ -14,7 +14,7 @@ from multiprocessing import Process
 from gpt_code_ui.webapp.main import app, APP_PORT
 from gpt_code_ui.kernel_program.main import main as kernel_program_main, cleanup_kernel_program
 
-APP_URL = "http://localhost:%s" % APP_PORT
+APP_URL = f"http://localhost:{APP_PORT}"
 
 def run_webapp():
     try:
@@ -39,12 +39,7 @@ def setup_logging():
     logging.getLogger().addHandler(file_handler)
 
 def print_color(text, color="gray"):
-    # Default to gray
-    code="242"
-
-    if color == "green":
-        code="35"
-    
+    code = "35" if color == "green" else "242"
     gray_code = "\033[38;5;%sm" % code
     reset_code = "\033[0m"
     print(f"{gray_code}{text}{reset_code}")
@@ -52,20 +47,20 @@ def print_color(text, color="gray"):
 
 def print_banner():
         
-        print("""
+    print("""
 █▀▀ █▀█ ▀█▀ ▄▄ █▀▀ █▀█ █▀▄ █▀▀
 █▄█ █▀▀ ░█░ ░░ █▄▄ █▄█ █▄▀ ██▄
         """)
 
-        print("> Open GPT-Code UI in your browser %s" % APP_URL)
-        print("")
-        print("You can inspect detailed logs in app.log.")
-        print("")
-        print("Find your OpenAI API key at https://platform.openai.com/account/api-keys")
-        print("")
-        print_color("I'm looking for exciting MLE opportunities! Find out more https://ricklamers.io/about", color="green")
-        print_color("")
-        print_color("Contribute to GPT-Code UI at https://github.com/ricklamers/gpt-code-ui")   
+    print(f"> Open GPT-Code UI in your browser {APP_URL}")
+    print("")
+    print("You can inspect detailed logs in app.log.")
+    print("")
+    print("Find your OpenAI API key at https://platform.openai.com/account/api-keys")
+    print("")
+    print_color("I'm looking for exciting MLE opportunities! Find out more https://ricklamers.io/about", color="green")
+    print_color("")
+    print_color("Contribute to GPT-Code UI at https://github.com/ricklamers/gpt-code-ui")   
 
 def main():
     setup_logging()
